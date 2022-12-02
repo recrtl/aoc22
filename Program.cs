@@ -1,19 +1,29 @@
 ﻿using System.Reflection;
 
+namespace aoc22;
+
 internal class Program
 {
+    private const string ClassPrefix = "Day";
+
     private static void Main(string[] args)
     {
-        var num = args[0];
+        var types = Assembly.GetExecutingAssembly()
+            .GetTypes()
+            .Where(t => t.IsClass && t.Name.StartsWith(ClassPrefix))
+            .OrderBy(t => t.Name)
+            .ToArray();
 
-        var className = $"Day{num}";
-        var assembly = Assembly.GetExecutingAssembly();
-        var type = assembly.GetTypes().First(t => t.Name == className);
-        var day = Activator.CreateInstance(type) as Day;
+        var dayNum = types.Length;
+        if (args.Length >= 1) dayNum = int.Parse(args[0]);
+
+        var dayClass = types[dayNum - 1];
+        Console.WriteLine($"=={dayClass.Name}==");
+        var day = Activator.CreateInstance(dayClass) as Day;
         if (day == null) throw new Exception("not a Day");
 
-        var example = File.ReadAllText($"{num}.example.txt");
-        var input = File.ReadAllText($"{num}.input.txt");
+        var example = File.ReadAllText($"{dayNum}.example.txt");
+        var input = File.ReadAllText($"{dayNum}.input.txt");
         Console.WriteLine("Part 1:");
         Console.WriteLine("Example: " + day.Part1(example));
         Console.WriteLine("Actual: " + day.Part1(input));

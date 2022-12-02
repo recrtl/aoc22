@@ -16,7 +16,7 @@ public class Day2 : Day
         return rounds.Sum(x => x.Score()).ToString();
     }
 
-    private static Choice getLoseAgainst(Choice input)
+    private static Choice GetLoseAgainst(Choice input)
     {
         switch (input)
         {
@@ -31,7 +31,7 @@ public class Day2 : Day
         }
     }
 
-    private static Choice getWinAgainst(Choice input)
+    private static Choice GetWinAgainst(Choice input)
     {
         switch (input)
         {
@@ -46,7 +46,7 @@ public class Day2 : Day
         }
     }
 
-    private static Choice parseChoice(string v)
+    private static Choice ParseChoice(string v)
     {
         switch (v)
         {
@@ -72,8 +72,8 @@ public class Day2 : Day
             var splits = line.Split(" ");
             res.Add(new Round
             {
-                ElfChoice = parseChoice(splits[0]),
-                MyChoice = parseChoice(splits[1])
+                ElfChoice = ParseChoice(splits[0]),
+                MyChoice = ParseChoice(splits[1])
             });
         }
 
@@ -88,7 +88,7 @@ public class Day2 : Day
             var splits = line.Split(" ");
             res.Add(new Round
             {
-                ElfChoice = parseChoice(splits[0]),
+                ElfChoice = ParseChoice(splits[0]),
                 Result = parseResult(splits[1])
             });
         }
@@ -134,36 +134,38 @@ public class Day2 : Day
         public void Solve()
         {
             if (!Result.HasValue)
-                Result = getResult();
+                Result = GetResult();
             else
-                MyChoice = getMyChoice();
+                MyChoice = GetMyChoice();
         }
 
 
         public int Score()
         {
+            if (!MyChoice.HasValue || !Result.HasValue) throw new Exception("call Solve()");
+
             return (int)MyChoice + (int)Result.Value;
         }
 
-        private Result getResult()
+        private Result GetResult()
         {
             if (MyChoice == ElfChoice) return Day2.Result.Draw;
 
-            if (ElfChoice == getWinAgainst(MyChoice.Value)) return Day2.Result.Lose;
+            if (ElfChoice == GetWinAgainst(MyChoice!.Value)) return Day2.Result.Lose;
 
             return Day2.Result.Win;
         }
 
-        private Choice getMyChoice()
+        private Choice GetMyChoice()
         {
             switch (Result)
             {
                 case Day2.Result.Draw:
                     return ElfChoice;
                 case Day2.Result.Lose:
-                    return getLoseAgainst(ElfChoice);
+                    return GetLoseAgainst(ElfChoice);
                 case Day2.Result.Win:
-                    return getWinAgainst(ElfChoice);
+                    return GetWinAgainst(ElfChoice);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
