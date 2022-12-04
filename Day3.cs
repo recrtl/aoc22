@@ -46,7 +46,7 @@ public class Day3 : Day
 
     private class Bag
     {
-        public char[] Compartment1, Compartment2;
+        public char[] Compartment1 = null!, Compartment2 = null!;
 
         public IEnumerable<char> Content()
         {
